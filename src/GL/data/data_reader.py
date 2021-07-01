@@ -1,25 +1,33 @@
 import pandas as pd
+import numpy as np
+import scipy.io as spio
 
 class DataReader:
     def __init__(self):
         pass
 
     @staticmethod
-    def read_BD():
-        data = pd.read_csv("../data/BD/choices_diagno.csv.zip", compression='zip', header=0, sep=',', quotechar='"')
-        data['reward'] = [0 if x == 'null' else 1 for x in data['outcome']]
-        data['id'] = data['ID']
-        data['block'] = data['trial']
+    def read_GL():
+        data = {}
+        for i in range(1,91):
+            testData = spio.loadmat('genData_smG_rlG\sub_'+str(i)+'.mat')
+            struct = testData['subData']
+            data['S'+str(i)] = [
+                        {
+                            'action': np.array([struct[0,0]['resp'].flatten()]),
+                            'state': np.array([struct[0,0]['stimOffers']]),
+                            'reward': np.array([struct[0,0]['outcomeRew'].flatten()]),
+                            'id': 'S'+str(i),
 
-        #R1: right, R2: Left
-        data['action'] = [0 if x == 'R1' else 1 for x in data['key']]
-        del data['trial']
-        del data['ID']
+                            'block': 0
+                        }
+
+                    ]
         return data
 
     @staticmethod
-    def read_BD_index():
+    def read_GL_index():
         return pd.read_csv("../data/BD/ind.csv", header=0, sep=',', quotechar='"')
 
 if __name__ == '__main__':
-    DataReader.read_BD()
+    DataReader.read_GL()

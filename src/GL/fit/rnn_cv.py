@@ -10,12 +10,13 @@ from actionflow.rnn.lstm_beh import LSTMBeh
 from actionflow.rnn.opt_beh import OptBEH
 from actionflow.util.helper import cv_list, get_total_pionts
 from actionflow.util.logger import LogFile, DLogger
-from BD.data.data_reader import DataReader
-from BD.util.paths import Paths
-import  tensorflow as tf
+from GL.data.data_reader import DataReader
+from GL.util.paths import Paths
+import tensorflow as tf
 
+cv_counts = 10
 cv_lists_group = {}
-data = DataReader.read_BD()
+data = DataReader.read_GL()
 for group in data['diag'].unique().tolist():
     gdata = data.loc[data.diag == group]
     ids = gdata['id'].unique().tolist()
@@ -23,20 +24,18 @@ for group in data['diag'].unique().tolist():
 
 configs = []
 
-for group in ['Healthy', 'Bipolar', 'Depression']:
-    for lr in [1e-2]:
-        for cells in [5, 10, 20, 30]:
-            gdata = data.loc[data.diag == group]
-            ids = gdata['id'].unique().tolist()
-            for i in range(len(ids)):
-                configs.append({'g': group, 'lr': lr, 'cells': cells, 'cv_index': i})
+for lr in [1e-2]:
+    for cells in [5, 10, 20, 30]:
+        gdata = data.loc[data.diag == group]
+        ids = gdata['id'].unique().tolist()
+        for i in range(len(ids)):
+            configs.append({'lr': lr, 'cells': cells, 'cv_index': i})
 
 
-def run_BD_RNN(i):
+def run_GL_RNN(i):
     tf.reset_default_graph()
     ncells = configs[i]['cells']
     learning_rate = configs[i]['lr']
-    group = configs[i]['g']
     cv_index = configs[i]['cv_index']
 
     output_path = Paths.local_path + 'BD/rnn-cv/' + str(ncells) + 'cells/' + group + '/' + 'fold' + str(cv_index) + '/'
@@ -74,4 +73,4 @@ if __name__ == '__main__':
     else:
         raise Exception('invalid argument')
 
-    run_cv(run_BD_RNN, n_proc)
+    run_cv(run_GL_RNN, n_proc)
