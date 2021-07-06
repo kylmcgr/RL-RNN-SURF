@@ -15,20 +15,17 @@ from GL.util.paths import Paths
 import tensorflow as tf
 
 cv_counts = 10
-cv_lists_group = {}
+cv_lists = {}
 data = DataReader.read_GL()
-for group in data['diag'].unique().tolist():
-    gdata = data.loc[data.diag == group]
-    ids = gdata['id'].unique().tolist()
-    cv_lists_group[group] = cv_list(ids, len(ids))
+gdata = data.loc[data.diag == group]
+ids = gdata['id'].unique().tolist()
+cv_lists = cv_list(ids, len(ids))
 
 configs = []
 
 for lr in [1e-2]:
     for cells in [5, 10, 20, 30]:
-        gdata = data.loc[data.diag == group]
-        ids = gdata['id'].unique().tolist()
-        for i in range(len(ids)):
+        for i in range(len(cv_counts)):
             configs.append({'lr': lr, 'cells': cells, 'cv_index': i})
 
 
@@ -65,7 +62,6 @@ def run_cv(f, n_proc):
 
 
 if __name__ == '__main__':
-
     if len(sys.argv) == 2:
         n_proc = int(sys.argv[1])
     elif len(sys.argv) == 1:

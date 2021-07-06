@@ -9,7 +9,7 @@ class DataReader:
     @staticmethod
     def read_GL():
         data = {}
-        for i in range(1,91):
+        for i in range(1,101):
             testData = spio.loadmat('genData_smG_rlG\sub_'+str(i)+'.mat')
             struct = testData['subData']
             data['S'+str(i)] = [
