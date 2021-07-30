@@ -32,13 +32,13 @@ def run_EE_RNN(i):
         dftr = pd.DataFrame({'id': ids, 'train': 'train'})
         train, test = DataProcess.train_test_between_subject(data, dftr,
                                                              [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12])
-        # train = DataProcess.merge_data(train)
-        #
-        # DLogger.logger().debug("total points: " + str(get_total_pionts(train)))
-        #
-        # worker = LSTMBeh(2, 0, n_cells=ncells)
-        # lrh.OptBEH.optimise(worker, output_path, train, None,
-        #                     learning_rate=lr, global_iters=0)
+        train = DataProcess.merge_data(train)
+
+        DLogger.logger().debug("total points: " + str(get_total_pionts(train)))
+
+        worker = LSTMBeh(2, 2, n_cells=ncells)
+        lrh.OptBEH.optimise(worker, output_path, train, None,
+                            learning_rate=lr, global_iters=0)
 
 
 def run_cv(f, n_proc):

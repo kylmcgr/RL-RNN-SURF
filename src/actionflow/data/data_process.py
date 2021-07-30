@@ -52,10 +52,10 @@ class DataProcess:
     @staticmethod
     def get_training_data(data, test_blocks):
         sub_data = data.loc[data.block.isin(test_blocks)]
-        reward = sub_data['reward'].as_matrix()
-        choices = sub_data['action'].as_matrix()
+        reward = sub_data['reward'].to_numpy()
+        choices = sub_data['action'].to_numpy()
         if 'state' in sub_data:
-            state = sub_data['state'].as_matrix()
+            state = sub_data['state'].to_numpy()
         else:
             state = None
 
