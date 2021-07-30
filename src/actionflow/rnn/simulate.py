@@ -72,45 +72,43 @@ class Simulator:
                     n_states,
                     data, folds, model_iters, trials):
         df = pd.DataFrame()
-        for group in folds.keys():
-            for n_cells in cells:
-                for fold in folds[group]:
-                    for model_iter in model_iters:
-                        input_folder = base_input_folder + str(n_cells) + 'cells/' + group + '/' + fold + '/'
-                        output_folder = base_output_folder + str(
-                            n_cells) + 'cells/' + group + '/' + fold + '/' + model_iter + '/'
+        for n_cells in cells:
+            for fold in folds:
+                for model_iter in model_iters:
+                    input_folder = base_input_folder + str(n_cells) + 'cells/' + fold + '/'
+                    output_folder = base_output_folder + str(
+                        n_cells) + 'cells/' + fold + '/' + model_iter + '/'
 
-                        tr_tst = pd.read_csv(input_folder + 'train_test.csv')
+                    tr_tst = pd.read_csv(input_folder + 'train_test.csv')
 
-                        if not ('id' in tr_tst):
-                            DLogger.logger().debug('id not found in test train file. Using ID instead.')
-                            tr_tst['id'] = tr_tst['ID']
+                    if not ('id' in tr_tst):
+                        DLogger.logger().debug('id not found in test train file. Using ID instead.')
+                        tr_tst['id'] = tr_tst['ID']
 
-                        tst_ids = tr_tst.loc[tr_tst.train == 'test']['id']
-                        dftr = pd.DataFrame({'id': tst_ids, 'train': 'train'})
-                        train, _ = DataProcess.train_test_between_subject(data, dftr, trials)
+                    tst_ids = tr_tst.loc[tr_tst.train == 'test']['id']
+                    dftr = pd.DataFrame({'id': tst_ids, 'train': 'train'})
+                    train, _ = DataProcess.train_test_between_subject(data, dftr, trials)
 
-                        tf.reset_default_graph()
+                    tf.reset_default_graph()
 
-                        worker = worker_gen(n_actions, n_states, n_cells)
-                        DLogger.logger().debug(input_folder + model_iter)
+                    worker = worker_gen(n_actions, n_states, n_cells)
+                    DLogger.logger().debug(input_folder + model_iter)
 
-                        Simulator.simulate_worker(worker,
-                                                  input_folder + model_iter + '/',
-                                                  train,
-                                                  output_folder)
+                    Simulator.simulate_worker(worker,
+                                              input_folder + model_iter + '/',
+                                              train,
+                                              output_folder)
 
-                        train = pd.read_csv(output_folder + 'train.csv')
-                        policies = pd.read_csv(output_folder + 'policies-.csv')
+                    train = pd.read_csv(output_folder + 'train.csv')
+                    policies = pd.read_csv(output_folder + 'policies-.csv')
 
-                        acc, nlp, total_nlp = Assessor.evaluate_fit_multi(policies, train)
-                        df = df.append(pd.DataFrame({
-                            'acc': [acc],
-                            'nlp': [nlp],
-                            'total nlp': [total_nlp],
-                            'group': group,
-                            'cell': n_cells,
-                            'fold': fold,
-                            'model_iter': model_iter
-                        }))
+                    acc, nlp, total_nlp = Assessor.evaluate_fit_multi(policies, train)
+                    df = df.append(pd.DataFrame({
+                        'acc': [acc],
+                        'nlp': [nlp],
+                        'total nlp': [total_nlp],
+                        'cell': n_cells,
+                        'fold': fold,
+                        'model_iter': model_iter
+                    }))
         df.to_csv(base_output_folder + 'accu.csv')

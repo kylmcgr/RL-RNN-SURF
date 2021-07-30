@@ -3,9 +3,9 @@ from actionflow.data.data_process import DataProcess
 from actionflow.rnn.lstm_beh import LSTMBeh
 from actionflow.rnn.simulate import Simulator
 from actionflow.util import DLogger
-from BD.data.data_reader import DataReader
+from GL.data.data_reader import DataReader
 import tensorflow as tf
-from BD.util.paths import Paths
+from GL.util.paths import Paths
 
 
 def simulate_model(input_folder, output_folder, data, n_cells):
@@ -26,7 +26,7 @@ def simulate_model(input_folder, output_folder, data, n_cells):
 
 
 if __name__ == '__main__':
-    data = DataReader.read_BD()
+    data = DataReader.read_GL()
 
     simulate_model(Paths.rest_path + 'archive/beh/rnn-opt-from-init/10cells/Healthy/model-final/',
                    Paths.local_path + 'BD/on-sims-data/Healthy/',

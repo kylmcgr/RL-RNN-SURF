@@ -14,59 +14,59 @@ from GL.data.data_reader import DataReader
 from GL.util.paths import Paths
 import tensorflow as tf
 
-cv_counts = 10
-cv_lists = {}
-data = DataReader.read_GL()
-gdata = data.loc[data.diag == group]
-ids = gdata['id'].unique().tolist()
-cv_lists = cv_list(ids, len(ids))
-
-configs = []
-
-for lr in [1e-2]:
-    for cells in [5, 10, 20, 30]:
-        for i in range(len(cv_counts)):
-            configs.append({'lr': lr, 'cells': cells, 'cv_index': i})
-
-
-def run_GL_RNN(i):
-    tf.reset_default_graph()
-    ncells = configs[i]['cells']
-    learning_rate = configs[i]['lr']
-    cv_index = configs[i]['cv_index']
-
-    output_path = Paths.local_path + 'BD/rnn-cv/' + str(ncells) + 'cells/' + group + '/' + 'fold' + str(cv_index) + '/'
-    with LogFile(output_path, 'run.log'):
-        indx_data = cv_lists_group[group][cv_index]
-        gdata = data.loc[data.diag == group]
-        train, test = DataProcess.train_test_between_subject(gdata, indx_data,
-                                                             [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12])
-
-        indx_data.to_csv(output_path + 'train_test.csv')
-        train_merged = DataProcess.merge_data(train)
-        DLogger.logger().debug("total points: " + str(get_total_pionts(train_merged)))
-        del train
-
-        worker = LSTMBeh(2, 0, n_cells=ncells)
-        OptBEH.optimise(worker, output_path, train_merged, None,
-                        learning_rate=learning_rate,
-                        global_iters=3000,
-                        load_model_path='../inits/rnn-init/' + str(ncells) + 'cells/model-final/'
-                        )
-
-def run_cv(f, n_proc):
-    p = Pool(n_proc)
-    p.map(f, range(len(configs)))
-    p.close() # no more tasks
-    p.join()  # wrap up current tasks
+# cv_counts = 10
+# cv_lists = {}
+# data = DataReader.read_GL()
+#
+# ids=list(data.keys())
+# cv_lists = cv_list(ids, cv_counts)
+#
+# configs = []
+#
+# for lr in [1e-2]:
+#     for cells in [5, 10, 20, 30]:
+#         for i in range(cv_counts):
+#             configs.append({'lr': lr, 'cells': cells, 'cv_index': i})
+#
+#
+# def run_GL_RNN(i):
+#     tf.reset_default_graph()
+#     ncells = configs[i]['cells']
+#     learning_rate = configs[i]['lr']
+#     cv_index = configs[i]['cv_index']
+#
+#     output_path = Paths.local_path + 'GL/rnn-cv/' + str(ncells) + 'cells/' + 'fold' + str(cv_index) + '/'
+#     with LogFile(output_path, 'run.log'):
+#         indx_data = cv_lists[cv_index]
+#         train, test = DataProcess.train_test_between_subject(data, indx_data,
+#                                                              [1, 2, 3, 4])
+#
+#         indx_data.to_csv(output_path + 'train_test.csv')
+#         train_merged = DataProcess.merge_data(train)
+#         DLogger.logger().debug("total points: " + str(get_total_pionts(train_merged)))
+#         del train
+#
+#         worker = LSTMBeh(2, 2, n_cells=ncells)
+#         OptBEH.optimise(worker, output_path, train_merged, None,
+#                         learning_rate=learning_rate,
+#                         global_iters=3000,
+#                         load_model_path='../inits/rnn-init/' + str(ncells) + 'cells/model-final/'
+#                         )
+#
+# def run_cv(f, n_proc):
+#     p = Pool(n_proc)
+#     p.map(f, range(len(configs)))
+#     p.close() # no more tasks
+#     p.join()  # wrap up current tasks
 
 
 if __name__ == '__main__':
-    if len(sys.argv) == 2:
-        n_proc = int(sys.argv[1])
-    elif len(sys.argv) == 1:
-        n_proc = 1
-    else:
-        raise Exception('invalid argument')
-
-    run_cv(run_GL_RNN, n_proc)
+    DataReader.read_GL()
+    # if len(sys.argv) == 2:
+    #     n_proc = int(sys.argv[1])
+    # elif len(sys.argv) == 1:
+    #     n_proc = 1
+    # else:
+    #     raise Exception('invalid argument')
+    #
+    # run_cv(run_GL_RNN, n_proc)

@@ -3,14 +3,16 @@
 
 from actionflow.rnn.lstm_beh import LSTMBeh
 from actionflow.rnn.simulate import Simulator
-from BD.data.data_reader import DataReader
-from BD.util.paths import Paths
+from GL.data.data_reader import DataReader
+from GL.util.paths import Paths
 
 
-def evaluate_BD_CV():
-    data = DataReader.read_BD()
-    base_input_folder = Paths.rest_path + 'archive/beh/rnn-cv/'
-    base_output_folder = Paths.local_path + 'BD/evals/rnn-cv-evals/'
+def evaluate_GL_CV():
+    data = DataReader.read_GL()
+    base_input_folder = Paths.local_path + 'GL/rnn-cv/'
+    base_output_folder = Paths.local_path + 'GL/evals/rnn-cv-evals/'
+    print(base_input_folder)
+    print(base_output_folder)
     model_iters = ['model-0', 'model-100',
                    'model-200', 'model-300',
                    'model-400', 'model-500',
@@ -29,20 +31,17 @@ def evaluate_BD_CV():
                    'model-final'
                    ]
 
-    cells = [5, 10, 20]
-    folds = {'Healthy': ['fold' + str(x) for x in range(0, 34)],
-             'Depression': ['fold' + str(x) for x in range(0, 34)],
-             'Bipolar': ['fold' + str(x) for x in range(0, 33)]
-             }
+    cells = [5, 10, 20, 30]
+    folds = ['fold' + str(x) for x in range(0, 10)]
 
     def worker_gen(n_actions, n_states, n_cells):
-        return LSTMBeh(2, 0, n_cells)
+        return LSTMBeh(2, 2, n_cells)
 
     Simulator.evaluate_CV(worker_gen, base_input_folder, base_output_folder,
-                          cells, 2, 0,
+                          cells, 2, 2,
                           data, folds, model_iters,
                           [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12])
 
 
 if __name__ == '__main__':
-    evaluate_BD_CV()
+    evaluate_GL_CV()

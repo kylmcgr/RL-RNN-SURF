@@ -8,11 +8,11 @@ from actionflow.data.data_process import DataProcess
 from actionflow.rnn.lstm_beh import LSTMBeh
 from actionflow.util.helper import get_total_pionts
 from actionflow.util.logger import LogFile, DLogger
-from BD.data.data_reader import DataReader
-from BD.util.paths import Paths
+from GL.data.data_reader import DataReader
+from GL.util.paths import Paths
 import tensorflow as tf
 
-data = DataReader.read_BD()
+data = DataReader.read_GL()
 configs = []
 
 for lr in [1e-2]:
@@ -20,15 +20,15 @@ for lr in [1e-2]:
         configs.append({'lr': lr, 'cells': cells})
 
 
-def run_BD_RNN(i):
+def run_GL_RNN(i):
 
     tf.reset_default_graph()
     ncells = configs[i]['cells']
     lr = configs[i]['lr']
-    output_path = Paths.local_path + 'BD/rnn-init/' + str(ncells) + 'cells/'
+    output_path = Paths.local_path + 'GL/rnn-init/' + str(ncells) + 'cells/'
     with LogFile(output_path, 'run.log'):
 
-        ids = data['id'].unique().tolist()
+        ids = list(data.keys())
         dftr = pd.DataFrame({'id': ids, 'train': 'train'})
         train, test = DataProcess.train_test_between_subject(data, dftr,
                                                              [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12])
@@ -36,7 +36,7 @@ def run_BD_RNN(i):
 
         DLogger.logger().debug("total points: " + str(get_total_pionts(train)))
 
-        worker = LSTMBeh(2, 0, n_cells=ncells)
+        worker = LSTMBeh(2, 2, n_cells=ncells)
         lrh.OptBEH.optimise(worker, output_path, train, None,
                             learning_rate=lr, global_iters=0)
 
@@ -57,4 +57,4 @@ if __name__ == '__main__':
     else:
         raise Exception('invalid argument')
 
-    run_cv(run_BD_RNN, n_proc)
+    run_cv(run_GL_RNN, n_proc)

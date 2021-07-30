@@ -32,7 +32,7 @@ class Assessor:
         total_nlp = 0
         for id in ids:
             sub_c = np.array(test.loc[test.id == id]['action']).astype(np.int)
-            sub_p = np.array((policies.loc[policies.id == id]).ix[:, 1:(n_actions + 1)])
+            sub_p = np.array((policies.loc[policies.id == id]).iloc[:, 1:(n_actions + 1)])
             sub_p = sub_p[sub_c != -1]
             sub_c = sub_c[sub_c != -1]
 
