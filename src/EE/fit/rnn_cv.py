@@ -10,12 +10,12 @@ from actionflow.rnn.lstm_beh import LSTMBeh
 from actionflow.rnn.opt_beh import OptBEH
 from actionflow.util.helper import cv_list, get_total_pionts
 from actionflow.util.logger import LogFile, DLogger
-from BD.data.data_reader import DataReader
-from BD.util.paths import Paths
+from EE.data.data_reader import DataReader
+from EE.util.paths import Paths
 import  tensorflow as tf
 
 cv_lists_group = {}
-data = DataReader.read_BD()
+data = DataReader.read_EE()
 for group in data['diag'].unique().tolist():
     gdata = data.loc[data.diag == group]
     ids = gdata['id'].unique().tolist()
@@ -23,7 +23,7 @@ for group in data['diag'].unique().tolist():
 
 configs = []
 
-for group in ['Healthy', 'Bipolar', 'Depression']:
+for group in ['Novelty', 'Uncertainty']:
     for lr in [1e-2]:
         for cells in [5, 10, 20, 30]:
             gdata = data.loc[data.diag == group]
@@ -32,19 +32,19 @@ for group in ['Healthy', 'Bipolar', 'Depression']:
                 configs.append({'g': group, 'lr': lr, 'cells': cells, 'cv_index': i})
 
 
-def run_BD_RNN(i):
+def run_EE_RNN(i):
     tf.reset_default_graph()
     ncells = configs[i]['cells']
     learning_rate = configs[i]['lr']
     group = configs[i]['g']
     cv_index = configs[i]['cv_index']
 
-    output_path = Paths.local_path + 'BD/rnn-cv/' + str(ncells) + 'cells/' + group + '/' + 'fold' + str(cv_index) + '/'
+    output_path = Paths.local_path + 'EE/rnn-cv/' + str(ncells) + 'cells/' + group + '/' + 'fold' + str(cv_index) + '/'
     with LogFile(output_path, 'run.log'):
         indx_data = cv_lists_group[group][cv_index]
         gdata = data.loc[data.diag == group]
         train, test = DataProcess.train_test_between_subject(gdata, indx_data,
-                                                             [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12])
+                                                             [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11])
 
         indx_data.to_csv(output_path + 'train_test.csv')
         train_merged = DataProcess.merge_data(train)
@@ -74,4 +74,4 @@ if __name__ == '__main__':
     else:
         raise Exception('invalid argument')
 
-    run_cv(run_BD_RNN, n_proc)
+    run_cv(run_EE_RNN, n_proc)

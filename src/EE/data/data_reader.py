@@ -14,7 +14,7 @@ class DataReader:
             new_data['reward'] = new_data['outcome']
             new_data['action'] = [x-1 for x in new_data['respKey']]
             new_data['diag'] = ['Novelty' if i <= 50 else 'Uncertainty' for x in new_data.index]
-            new_data['state'] = [[x,y] for (x,y) in zip(new_data['trialStimID_1'],new_data['trialStimID_2'])]
+            new_data['no_state'] = [[x,y] for (x,y) in zip(new_data['trialStimID_1'],new_data['trialStimID_2'])]
             del new_data['subID']
             del new_data['blockID']
             del new_data['outcome']
