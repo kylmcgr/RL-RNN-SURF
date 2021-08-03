@@ -55,7 +55,7 @@ class DataProcess:
         reward = sub_data['reward'].to_numpy()
         choices = sub_data['action'].to_numpy()
         if 'state' in sub_data:
-            state = sub_data['state'].to_numpy()
+            state = np.array(sub_data['state'].to_numpy().tolist())
         else:
             state = None
 

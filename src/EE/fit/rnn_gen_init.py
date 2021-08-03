@@ -36,7 +36,7 @@ def run_EE_RNN(i):
 
         DLogger.logger().debug("total points: " + str(get_total_pionts(train)))
 
-        worker = LSTMBeh(2, 0, n_cells=ncells)
+        worker = LSTMBeh(2, 2, n_cells=ncells)
         lrh.OptBEH.optimise(worker, output_path, train, None,
                             learning_rate=lr, global_iters=0)
 

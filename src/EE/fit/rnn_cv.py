@@ -51,7 +51,7 @@ def run_EE_RNN(i):
         DLogger.logger().debug("total points: " + str(get_total_pionts(train_merged)))
         del train
 
-        worker = LSTMBeh(2, 0, n_cells=ncells)
+        worker = LSTMBeh(2, 2, n_cells=ncells)
         OptBEH.optimise(worker, output_path, train_merged, None,
                         learning_rate=learning_rate,
                         global_iters=3000,

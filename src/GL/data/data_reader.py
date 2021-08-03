@@ -11,7 +11,7 @@ class DataReader:
     def read_GL():
         data = {}
         for i in range(1,101):
-            with open('simulationData\sim_'+str(i)+'.csv', 'r' ) as theFile:
+            with open('../data/GL/simulationData/sim_'+str(i)+'.csv', 'r' ) as theFile:
                 reader = csv.reader(theFile)
                 headers = next(reader, None)
                 actions = []

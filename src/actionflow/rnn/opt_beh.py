@@ -127,7 +127,6 @@ class OptBEH(Opt):
         l = 0
         for d in train_data:
             feed_dict = model.beh_feed(d['action'], d['reward'], d['state'])
-            # print(d['state'])
             loss, _ = sess.run([model.get_obj(),
                                 apply_grads],
                                feed_dict=feed_dict)
