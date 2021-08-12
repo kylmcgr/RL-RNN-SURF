@@ -1,7 +1,7 @@
 import tensorflow as tf
 import numpy as np
 from numpy.random import choice
-from actionflow.rnn.rnn_base import RNNBase
+from actionflow.rnn_features.rnn_base import RNNBase
 from ..rnn.consts import Const
 
 
@@ -83,7 +83,7 @@ class LSTMBase(RNNBase):
     #     rnn_out = lstm_outputs
     #     return rnn_out, state_out
 
-    def beh_feed(self, actions, rewards, states):
+    def beh_feed(self, actions, rewards, states, stim, samp):
         """
         Created a dict for TensorFlow by adding a dummy action and reward to the beginning of
         actions and rewards and a dummy state to the end of states
@@ -100,6 +100,10 @@ class LSTMBase(RNNBase):
         if states is not None:
             prev_states = np.hstack((states, np.zeros(states[:, 0:1].shape)))
             feed_dict[self.prev_states] = prev_states
+            prev_stim = np.hstack((stim, np.zeros(stim[:, 0:1].shape)))
+            feed_dict[self.prev_stim] = prev_stim
+            prev_samp = np.hstack((samp, np.zeros(samp[:, 0:1].shape)))
+            feed_dict[self.prev_samp] = prev_samp
         return feed_dict
 
     def simulate_env(self, sess, max_time, env_model, greedy=False, cell_mask=None):

@@ -1,7 +1,7 @@
 import numpy as np
 import tensorflow as tf
 
-from actionflow.rnn.opt import Opt
+from actionflow.rnn_features.opt import Opt
 from ..util import DLogger
 from ..util.assessor import Assessor
 from ..util.export import Export
@@ -34,6 +34,8 @@ class OptBEH(Opt):
                             'action': array of dim nBatches x nTimeSteps
                             'reward': array of dim nBatches x nTimeSteps
                             'state': array of dim nBatches x nTimeSteps x stateDim
+                            'stim': array of dim nBatches x nTimeSteps x stateDim
+                            'samp': array of dim nBatches x nTimeSteps x stateDim
                             'block': int
                             'id': string
                         }
@@ -51,6 +53,8 @@ class OptBEH(Opt):
                             'action': array of dim nBatches x nTimeSteps
                             'reward': array of dim nBatches x nTimeSteps
                             'state': array of dim nBatches x nTimeSteps x stateDim
+                            'stim': array of dim nBatches x nTimeSteps x stateDim
+                            'samp': array of dim nBatches x nTimeSteps x stateDim
                             'block': int
                             'id': string
                         }
@@ -126,7 +130,7 @@ class OptBEH(Opt):
 
         l = 0
         for d in train_data:
-            feed_dict = model.beh_feed(d['action'], d['reward'], d['state'])
+            feed_dict = model.beh_feed(d['action'], d['reward'], d['state'], d['stim'], d['samp'])
             loss, _ = sess.run([model.get_obj(),
                                 apply_grads],
                                feed_dict=feed_dict)
@@ -149,7 +153,9 @@ class OptBEH(Opt):
                     policies, c_track, h_track, _ = model.simulate(sess,
                                                                    v['reward'],
                                                                    v['action'],
-                                                                   v['state'])
+                                                                   v['state'],
+                                                                   v['stim'],
+                                                                   v['samp'])
                     policies_list[k][v['block']] = policies[0, :-1, :]
                     state_track_list[k][v['block']] = np.concatenate((c_track, h_track), axis=1)[0].T
                     post_accu.append(Assessor.evaluate_fit(policies[0, :-1, :], v['action'][0]))

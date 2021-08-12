@@ -103,7 +103,7 @@ class RNNBase():
 
         return -tf.reduce_sum(action_logs)
 
-    def simulate(self, sess, rewards, actions, states):
+    def simulate(self, sess, rewards, actions, states, stim, samp):
         """
         N:  number of batches
         T:  number of actions (trials)
@@ -144,7 +144,7 @@ class RNNBase():
                 similar to ``c_track''
         """
 
-        feed_dict = self.beh_feed(actions, rewards, states)
+        feed_dict = self.beh_feed(actions, rewards, states, stim, samp)
 
         policy, c_track, h_track, beh_loss = sess.run([self.policy,
                                                        self.get_c_track(),
@@ -196,7 +196,7 @@ class RNNBase():
         return self.prev_rewards
 
     @abstractmethod
-    def beh_feed(self, actions, rewards, states):
+    def beh_feed(self, actions, rewards, states, stim, samp):
         return NotImplemented
 
     @abstractmethod

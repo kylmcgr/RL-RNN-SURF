@@ -1,7 +1,7 @@
 import tensorflow as tf
 
 from actionflow.util import DLogger
-from ..rnn.lstm_base import LSTMBase
+from ..rnn_features.lstm_base import LSTMBase
 
 
 class LSTMBeh(LSTMBase):
