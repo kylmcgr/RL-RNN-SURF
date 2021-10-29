@@ -3,15 +3,15 @@
 from os.path import isdir
 from actionflow.util import DLogger
 import pandas as pd
-from BD.data.data_reader import DataReader
+from EE.data.data_reader import DataReader
 
 
-def get_BD_confs():
+def get_EE_confs():
     props = [[0.25, 0.05], [0.05, 0.25], [0.05, 0.125], [0.125, 0.05], [0.08, 0.05], [0.05, 0.08]]
     props += reversed(props)
     confs = []
     by_id = {}
-    for e in DataReader.read_BD().groupby(['id', 'block']):
+    for e in DataReader.read_EE().groupby(['id', 'block']):
         trial = e[1]['block'].unique()
         block = {'block': trial[0],
                       'id': e[1]['id'].unique()[0],

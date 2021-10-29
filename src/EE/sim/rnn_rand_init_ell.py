@@ -4,8 +4,8 @@ from actionflow.data.data_process import DataProcess
 from actionflow.rnn.lstm_beh import LSTMBeh
 from actionflow.util import DLogger
 from actionflow.util.helper import ensure_dir
-from BD.data.data_reader import DataReader
-from BD.util.paths import Paths
+from EE.data.data_reader import DataReader
+from EE.util.paths import Paths
 import pandas as pd
 import tensorflow as tf
 
@@ -13,33 +13,26 @@ configs = []
 
 for i in range(15):
     configs.append({
-        'g': 'Healthy',
+        'g': 'Novelty',
         'cells': 10,
         's': i
         },
     )
 
     configs.append({
-        'g': 'Bipolar',
-        'cells': 20,
-        's': i
-    })
-
-    configs.append({
-        'g': 'Depression',
-        'iters': 1200,
+        'g': 'Uncertainty',
         'cells': 10,
         's': i
     })
 
 
-def run_BD(i):
-    data = DataReader.read_BD()
+def run_EE(i):
+    data = DataReader.read_EE()
     ncells = configs[i]['cells']
     group = configs[i]['g']
     input_path = Paths.rest_path + 'archive/beh/rnn-opt-rand-init/' + 'run_' + \
                  str(configs[i]['s']) + '/' + str(ncells) + 'cells/' + group + '/model-final/'
-    output_path = Paths.local_path + 'BD/rnn-opt-rand-init-evals/' + 'run_' + \
+    output_path = Paths.local_path + 'EE/rnn-opt-rand-init-evals/' + 'run_' + \
                   str(configs[i]['s']) + '/' + str(ncells) + 'cells/' + group + '/'
 
     gdata = data.loc[data.diag == group]
@@ -47,11 +40,11 @@ def run_BD(i):
     dftr = pd.DataFrame({'id': ids, 'train': 'train'})
     tdftr = pd.DataFrame({'id': ids, 'train': 'test'})
     train, test = DataProcess.train_test_between_subject(gdata, pd.concat((dftr, tdftr)),
-                                                         [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12])
+                                                         [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11])
 
     test = DataProcess.merge_data(test)
     tf.reset_default_graph()
-    worker = LSTMBeh(2, 0, ncells)
+    worker = LSTMBeh(2, 2, ncells)
     saver = tf.train.Saver(max_to_keep=None)
 
     with tf.Session() as sess:
@@ -84,7 +77,7 @@ def run_BD(i):
 if __name__ == '__main__':
     df = pd.DataFrame()
     for i in range(len(configs)):
-        df = df.append(run_BD(i))
+        df = df.append(run_EE(i))
 
-    ensure_dir(Paths.local_path + 'BD/rnn-opt-rand-init-evals/')
-    df.to_csv(Paths.local_path + 'BD/rnn-opt-rand-init-evals/' + 'accu.csv')
+    ensure_dir(Paths.local_path + 'EE/rnn-opt-rand-init-evals/')
+    df.to_csv(Paths.local_path + 'EE/rnn-opt-rand-init-evals/' + 'accu.csv')

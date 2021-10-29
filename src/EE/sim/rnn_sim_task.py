@@ -7,16 +7,16 @@ from actionflow.rnn.simulate import Simulator
 from actionflow.sim.envs import bandit_evn
 from actionflow.util.helper import id_generator
 import pandas as pd
-from BD.sim.sims import get_BD_confs
-from BD.util.paths import Paths
+from EE.sim.sims import get_EE_confs
+from EE.util.paths import Paths
 
 
-def simulate_BD_real_task(greedy, output):
+def simulate_EE_real_task(greedy, output):
 
-    n_cells = {'Healthy': 10, 'Depression': 10, 'Bipolar': 20}
+    n_cells = {'Novelty': 20, 'Uncertainty': 20}
     model_iter = 'model-final'
 
-    confs, _, _ = get_BD_confs()
+    confs, _, _ = get_EE_confs()
 
     for c in confs:
         group = c['group']
@@ -33,7 +33,7 @@ def simulate_BD_real_task(greedy, output):
         pdc.to_csv(output_path + 'config.csv', index=False)
 
         tf.reset_default_graph()
-        worker = LSTMBeh(2, 0, n_cells[group])
+        worker = LSTMBeh(2, 2, n_cells[group])
         Simulator.simulate_env(worker,
                                input_path,
                                output_path,
@@ -45,4 +45,4 @@ def simulate_BD_real_task(greedy, output):
 
 
 if __name__ == '__main__':
-    simulate_BD_real_task(False, 'BD/sims/rnn_onpolicy/')
+    simulate_EE_real_task(False, 'EE/sims/rnn_onpolicy/')
