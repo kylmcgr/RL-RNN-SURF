@@ -8,3 +8,5 @@ PLoS Comput Biol 15(6): e1006903
 
 https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1006903
 
+## Authors and Acknowledgement
+I (Kyle) am the sole direct contributor to this project. Mentored by Jeffrey Cockburn of Caltech O'Doherty Lab.
