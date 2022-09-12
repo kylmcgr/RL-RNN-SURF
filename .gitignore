@@ -1,10 +1,12 @@
 #Mac
+data/BD/
 nongit/
 
 /doc/paper/*.pdf
 
 .DS_Store
 
+/data/BD
 /nongit
 
 # Intellij
@@ -68,5 +70,3 @@ Backup[ ]of[ ]*.numbers/
 
 # Mac finder files and hidden folders
 .DS_Store
-
-data/
