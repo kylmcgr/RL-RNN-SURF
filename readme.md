@@ -1,6 +1,6 @@
 # RL-RNN-SURF
 
-This project is a summer research project at the California Institute of Technology that uses builds on the code from the following paper:
+This project is a summer research project at the California Institute of Technology that builds on the code from the following paper:
 
 Dezfouli A, Griffiths K, Ramos F, Dayan P, Balleine BW (2019). 
 Models that learn how humans learn: The case of decision-making and its disorders. 
