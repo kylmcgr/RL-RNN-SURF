@@ -1,12 +1,12 @@
 #Mac
-data/BD/
+data/
 nongit/
 
 /doc/paper/*.pdf
 
 .DS_Store
 
-/data/BD
+/data
 /nongit
 
 # Intellij
